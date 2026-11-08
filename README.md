@@ -2,7 +2,7 @@
 
 I built this n8n workflow to turn meeting notes into a clear summary and organized action items, then send the results by email and save the tasks for follow-up.
 
-<img width="732" height="233" alt="image" src="https://github.com/user-attachments/assets/364d7fe7-ecd6-4bde-8280-aad3dd0ed065" />
+<img width="732" height="233" alt="Meeting Minutes Automation workflow demo" src="https://github.com/user-attachments/assets/364d7fe7-ecd6-4bde-8280-aad3dd0ed065" />
 
 ## How it works
 
