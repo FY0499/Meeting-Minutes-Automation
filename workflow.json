@@ -1,0 +1,284 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "claude-haiku-4-5-20251001",
+          "mode": "list",
+          "cachedResultName": "claude-haiku-4-5-20251001"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=أنت مساعد اجتماعات. اقرأ محضر الاجتماع واستخرج: 1) ملخص من 3 جمل 2) قائمة المهام (Action Items) مع اسم المسؤول (إن وجد) والموعد النهائي (إن وجد). أعد النتيجة كـ JSON فقط بهذا الشكل: {\"summary\": \"...\", \"tasks\": [{\"task\": \"...\", \"owner\": \"...\", \"due\": \"...\"}]}",
+              "role": "assistant"
+            },
+            {
+              "content": "={{ $json['نص المحضر / الملاحظات'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "position": [
+        224,
+        96
+      ],
+      "id": "fda7c718-a1e1-41f8-8ded-410c4ad50edd",
+      "name": "Message a model",
+      "credentials": {
+        "anthropicApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "13oT6S2bUooZBlz9uAAhKIV9ICqXiAzYtmJtDrbrLOn0",
+          "mode": "list",
+          "cachedResultName": "meating",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13oT6S2bUooZBlz9uAAhKIV9ICqXiAzYtmJtDrbrLOn0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13oT6S2bUooZBlz9uAAhKIV9ICqXiAzYtmJtDrbrLOn0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "task": "={{ $json.task }}",
+            "owner": "={{ $json.owner }}",
+            "due": "={{ $json.due }}",
+            "meeting": "={{ $('On form submission').item.json['عنوان الاجتماع'] }}",
+            "status": "Pending"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "meeting",
+              "displayName": "meeting",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "task",
+              "displayName": "task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "owner",
+              "displayName": "owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "due",
+              "displayName": "due",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1024,
+        0
+      ],
+      "id": "32743598-b937-4b86-aec8-a62653d6cb1b",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "z8CNmElJqux4zhsn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "=ملخص اجتماع: {{ $json.meetingTitle }}",
+        "message": "=<div style=\"font-family: Arial, sans-serif; line-height: 1.6;\">\n  <h2>ملخص الاجتماع</h2>\n\n  <p>{{ $json.summary }}</p>\n\n  <hr>\n\n  <p>\n    تم رفع المهام المستخرجة تلقائياً إلى شيت المتابعة.\n  </p>\n</div>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        192
+      ],
+      "id": "a18f45a2-99b2-45f8-b402-19aca364fd4d",
+      "name": "Send a message",
+      "webhookId": "b35a039f-933c-4733-9a5d-fae4ca69dd8b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lWGePbOEwuWKEYAi",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "tasks",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        800,
+        0
+      ],
+      "id": "529d3c2b-736a-4de9-ba25-4c84b4b0ba20",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json;\n\n// يدعم أكثر من شكل محتمل لرد Message a model / Gemini\nconst raw =\n  body?.content?.[0]?.text ??\n  body?.content?.parts?.[0]?.text ??\n  body?.candidates?.[0]?.content?.parts?.[0]?.text ??\n  body?.text ??\n  '';\n\nconst cleaned = String(raw)\n  .replace(/```json/gi, '')\n  .replace(/```/g, '')\n  .trim();\n\nlet parsed;\n\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (error) {\n  parsed = {\n    summary: cleaned,\n    tasks: []\n  };\n}\n\nconst formData = $('On form submission').first().json;\n\nreturn [\n  {\n    json: {\n      summary: parsed.summary || '',\n      tasks: Array.isArray(parsed.tasks) ? parsed.tasks : [],\n      meetingTitle: formData['عنوان الاجتماع'],\n      email: formData['البريد لإرسال الملخص']\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        96
+      ],
+      "id": "032098db-63fc-4ac8-8a6e-9bea3f46d121",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "formTitle": "رفع محضر الاجتماع",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "عنوان الاجتماع",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "نص المحضر / الملاحظات",
+              "fieldType": "textarea",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "البريد لإرسال الملخص",
+              "fieldType": "email",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        96
+      ],
+      "id": "b2dc0a4d-a208-4c4c-96a6-c50c3cf5ed86",
+      "name": "On form submission",
+      "webhookId": "c7c26360-df03-435f-a462-2d1d3cfe112b"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b28f68d3-e3de-43df-83bf-f734626ee18b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bb766294e56f79392fb7c3f41bdf12f02742dc223fc678d2c034018401269105"
+  },
+  "nodeGroups": [],
+  "id": "HkyGib9958hPM8ZY",
+  "tags": []
+}
