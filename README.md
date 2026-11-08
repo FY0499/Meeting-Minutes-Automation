@@ -1,28 +1,27 @@
 # Meeting Minutes Automation
 
-An n8n workflow that turns meeting notes into a structured summary and action-item list, then emails the result to a recipient.
+I built this n8n workflow to turn meeting notes into a clear summary and organized action items, then send the results by email and save the tasks for follow-up.
 
 ## How it works
 
-1. A user submits a meeting title, notes, and an email address through an n8n form.
-2. An AI model processes the submitted meeting notes and returns a summary and tasks.
-3. A JavaScript step parses the model response and adds the meeting title and recipient email.
-4. The workflow delivers the meeting output by email.
+1. The user submits the meeting title, meeting notes, and email address through a form.
+2. Claude reads the notes and extracts a short meeting summary and action items, including the task owner and due date when available.
+3. The workflow separates the extracted tasks into individual items.
+4. The tasks are saved to Google Sheets with a Pending status.
+5. The meeting summary is sent to the submitted email address.
+
+## Main features
+
+- Meeting notes processing through a form.
+- AI-generated meeting summary.
+- Action item extraction with owners and due dates when available.
+- Automatic task logging in Google Sheets.
+- Email delivery of the meeting summary.
 
 ## Technologies
 
-- n8n
-- AI model integration
-- JavaScript
-- Gmail
-- n8n Forms
+n8n, Anthropic Claude, Google Sheets, Gmail, JavaScript, and n8n Forms.
 
 ## Setup
 
-1. Import workflow.json into n8n.
-2. Configure the required AI, Google Sheets (if used in your instance), and Gmail credentials.
-3. Review the form fields and recipient handling, then test with sample meeting notes.
-
-## Notes
-
-This repository contains the exported n8n workflow. Configure your own credentials and integrations in n8n before running it.
+Import [workflow.json](./workflow.json) into n8n, configure your Anthropic, Google Sheets, and Gmail credentials, then connect your task-tracking sheet and test the form with sample meeting notes.
